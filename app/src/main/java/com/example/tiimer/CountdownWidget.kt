@@ -46,18 +46,10 @@ class CountdownWidget : GlanceAppWidget() {
         provideContent {
             val prefs = currentState<Preferences>()
             val active = prefs[CountdownPrefs.ACTIVE] ?: false
-            Column(modifier = GlanceModifier.fillMaxWidth().padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                if (!active) {
-                    Text(text = "Countdown Stopped", style = TextStyle(fontWeight = FontWeight.Medium))
-                    Spacer(modifier = GlanceModifier.size(8.dp))
-                    Button(text = "Start 48h Countdown", onClick = actionRunCallback<StartCountdownAction>())
-                } else {
-                    // Display remaining time (formatted as HH:MM:SS)
-                    val timeText = prefs[CountdownPrefs.DISPLAY_TEXT] ?: "--:--:--"
-                    Text(text = "Time left: $timeText", style = TextStyle(fontWeight = FontWeight.Bold))
-                    Spacer(modifier = GlanceModifier.size(8.dp))
-                    Button(text = "Stop Countdown", onClick = actionRunCallback<StopCountdownAction>())
-                }
+            if (!active) {
+                actionRunCallback<StartCountdownAction>()
+            } else {
+                Text(text = prefs[CountdownPrefs.DISPLAY_TEXT].orEmpty(), style = TextStyle(fontWeight = FontWeight.Bold))
             }
         }
     }
@@ -103,33 +95,6 @@ class StartCountdownAction : ActionCallback {
             ExistingWorkPolicy.REPLACE,
             workRequest
         )
-    }
-}
-
-// Action to stop the countdown (triggered by the Stop button in the widget)
-class StopCountdownAction : ActionCallback {
-
-    override suspend fun onAction(
-        context: Context,
-        glanceId: GlanceId,
-        parameters: ActionParameters
-    ) {
-        WorkManager.getInstance(context).cancelUniqueWork(CountdownPrefs.WORK_NAME)
-
-        // Update persistent DataStore state to indicate countdown stopped
-        context.countdownDataStore.edit { prefs ->
-            prefs[CountdownPrefs.ACTIVE] = false
-            prefs[CountdownPrefs.END_TIME] = 0L
-        }
-
-        // Update widget state: mark inactive and clear the displayed time
-        GlanceAppWidgetManager(context).getGlanceIds(CountdownWidget::class.java).forEach { id ->
-            updateAppWidgetState(context, id) { prefs ->
-                prefs[CountdownPrefs.ACTIVE] = false
-                prefs.remove(CountdownPrefs.DISPLAY_TEXT)  // remove or clear the time text
-            }
-        }
-        CountdownWidget().updateAll(context)
     }
 }
 
