@@ -61,12 +61,6 @@ class CountdownWidget : GlanceAppWidget() {
             }
         }
     }
-
-    @Composable
-    fun Content() {
-        // Read current widget state from DataStore
-
-    }
 }
 
 // Receiver to attach the GlanceAppWidget to the system (required for Glance widgets)
