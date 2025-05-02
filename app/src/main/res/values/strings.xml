@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Tiimer</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+    <string name="app_widget_description">This is an app widget description</string>
+    <string name="widget_description">2-day countdown timer</string>
+    <string name="notification_channel_id">timer_service_channel</string>
+    <string name="notification_channel_name">Timer Service</string>
+    <string name="notification_title">Timer Running</string>
+    <string name="notification_content">Countdown in progress</string>
+    <string name="appwidget_description">48-hour Countdown Widget</string>
+</resources>
