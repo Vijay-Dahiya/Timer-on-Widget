@@ -46,10 +46,15 @@ class CountdownWidget : GlanceAppWidget() {
         provideContent {
             val prefs = currentState<Preferences>()
             val active = prefs[CountdownPrefs.ACTIVE] ?: false
-            if (!active) {
-                actionRunCallback<StartCountdownAction>()
-            } else {
-                Text(text = prefs[CountdownPrefs.DISPLAY_TEXT].orEmpty(), style = TextStyle(fontWeight = FontWeight.Bold))
+            Column(modifier = GlanceModifier.fillMaxWidth().padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                if (!active) {
+                    Text(text = "Countdown Stopped", style = TextStyle(fontWeight = FontWeight.Medium))
+                    Spacer(modifier = GlanceModifier.size(8.dp))
+                    Button(text = "Start 48h Countdown", onClick = actionRunCallback<StartCountdownAction>())
+                } else {
+                    // Display remaining time (formatted as HH:MM:SS)
+                    Text(text = prefs[CountdownPrefs.DISPLAY_TEXT].orEmpty(), style = TextStyle(fontWeight = FontWeight.Bold))
+                }
             }
         }
     }
